@@ -1,5 +1,13 @@
 # coq-bitset
 
+## Contribution
+- Just forked from `git@github.com:artart78/coq-bitset.git`
+- In the process of porting to **Coq  version 8.13+alpha (August 2020)**
+( *OCaml 4.09.1* ), with **integrated ssreflect**,since moving to newer version seems required every now and then.
+   The result should appear here in a few days.
+- hopefully, I would like to use this to do exercises in Knuth Vol4 (more details when I get there! 
+but it may take longer!!)
+
 ## Description
 
 The purpose of this library is to help proving bit-level algorithms written in Coq/SSReflect
