@@ -1,9 +1,9 @@
-Require Import mathcomp.ssreflect.ssreflect.
+Require Import mathcomp.ssreflect.ssreflect .
 From mathcomp Require Import ssrbool eqtype ssrnat seq fintype ssrfun tuple finset.
 From Bits
      Require Import bits.
+Require Import Arith.
 
-Require Import ZArith Arith Lia.
 
 Set Implicit Arguments.
 Unset Strict Implicit.
@@ -46,26 +46,12 @@ Qed.
 
 Lemma singleton_repr (k: 'I_n) : repr (setBit #0 k true) [set k].
 Proof.
-      (* recall that #0: binary representation of 0 with unknown # bits , lemma is
-          therefore  {k} is represented by k-th bit set *)
-apply/setP => i.    (* also intro the quantifier hidden in =i *)
-rewrite !inE.
-apply/eqP/idP => [-> | ]. 
-  - rewrite setBitThenGetSame =>//.
-  - (* it seems that one can only read bits that have been set? *)
-     apply contraTeq => /eqP  i_neq_k. 
-     rewrite setBitThenGetDistinct ?ltn_ord ?getBit_zero //= .
-     by move/val_inj => h; apply: i_neq_k.  (* bien compliqué pour symmetrie! auto foire *)
-
-(* Orig :
     apply/setP=> i; rewrite !inE; apply/eqP/idP => [->|].
     by rewrite setBitThenGetSame.
     apply: contraTeq => /eqP i_neq_k.
     rewrite setBitThenGetDistinct ?ltn_ord ?getBit_zero //.
     (* XXX: The impedance here should be fixed *)
     by move/val_inj => h; apply: i_neq_k.
- *)
-     
 Qed.
 
 (* XXX: I disagree with this but it is a "mal menor" for now *)
@@ -114,32 +100,26 @@ Proof.
   by rewrite  -addnS.
   by simpl.  
 Qed.
-  
 
-Fact countZero:  forall size, count (nth false [::]) (iota 0 size) = 0.
+Fact  iota_BumpFun : forall T j (xs: seq T),
+    map (fun i  =>(i + 1)) (iota j (size xs)) = (iota (j+1) (size xs)).
 Proof.
-  move => size. induction size. by simpl.
-        have eqZero:=( eq_count  nth_nil_isFalse).
-        have ioplus := (iota_add  0 size 1).
-         - replace  (iota 0 size.+1) with (iota 0 size ++ iota (0 + size) 1).
-             by rewrite  count_cat !IHsize => //= ; rewrite !addn0 !add0n nth_nil =>//=.              simpl .  rewrite !add0n. simpl in ioplus. rewrite add0n in ioplus.
-             rewrite <- ioplus.
-             have iop2:= (iota_add 0 1 size).
-             rewrite ->  (Nat.add_comm) ; rewrite iop2 => //=.
-Qed.
+  move => T j xs; move: j ; elim: xs => [  j //=   | a l IH].
+  move => j //=; rewrite IH;  auto. 
+Qed.  
+       
 
 Fact countBump: forall x xs,     count (nth false (x :: xs)) (iota 1 (size xs))
                                  = count (nth false xs) (iota 0 (size xs)).
 Proof.
-  move => x xs.
-      have HbumpFun := ( nth_BumpFun x xs).
-      have Heqcounts := ( eq_count   HbumpFun).
-      unfold eqfun in Heqcounts. move : ( Heqcounts (iota 0 (size xs))) => Heqc2.
-      rewrite -Heqc2.
-      admit.  (** seems a simple thing arounf functions .... equality...*)
-  Search nth.
- Admitted.
+      move => x xs.
+      rewrite -(eq_count ( nth_BumpFun x xs) (iota 0 (size xs))). 
+      replace  (iota 1 (size xs)) with ( map (fun i  =>(i + 1)) (iota 0 (size xs))).
+      2: by move : (iota_BumpFun 0 xs) => //=; rewrite add0n => H.                 
 
+      (* hidden function composition in notation ?? *)
+      rewrite  count_map;  apply eq_count;  move => i //=.
+Qed.      
 
 (* XXX: Same as above *)
 Lemma count_nth_cons x xs :
@@ -161,10 +141,6 @@ Proof.
   rewrite co1 =>//=. rewrite addn0. congr addn.
   apply  countBump.
   by rewrite  -addnS.
-  (* Non working original :
-    by congr addn; elim: (size _) 0 => //= size ihsz z; rewrite ihsz. Qed.
-  *)
-
 Qed.
 
 Lemma count_repr bs E : repr bs E -> count_mem true bs = #|E|.
