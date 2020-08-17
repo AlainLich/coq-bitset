@@ -41,8 +41,19 @@ Qed.
 
 Definition ntz n (k: nat) (bs: BITS n) : BITS n := subB #n (cardinal k (orB bs (negB bs))).
 
-Lemma ntz_repr n (bs : BITS n) k x E : k %| n -> k > 0 -> repr bs E -> x \in E ->
-    ntz k bs = #[arg min_(k < x in E) k].
+(* From  the formula; (orB bs (negB bs)) represents   (bs | -bs) : position of the  
+   rightmost non zero bit (right most ==  least significant)
+   To make this work with Coq Proof, version 8.13+alpha (August 2020) compiled with 
+   OCaml 4.09.1, one must change "#[" to "# [" ! Otherwise this would conflict with
+   definitions in  coq-mathcomp-fingroup.dev/mathcomp/ssreflect/ssrnotations.v
+
+*)
+                                                                               
+Lemma ntz_repr (n:nat) (bs : BITS n) (k:nat)
+      (x: ordinal_finType n)
+      (E: {set ordinal_finType n})
+  : k %| n -> k > 0 -> repr bs E -> x \in E ->
+    ntz k bs ==   # [ arg min_(k < x in E) k].
 Proof.
   move=> Hk gtz_k HE Hx.
   rewrite -(@index_repr n bs x E)=> //.

@@ -1,38 +1,65 @@
-# * Extraction
-queens/
-bloom/
+#patterns for filenames to be ignored by git
+#         for details man gitignore
+# Do not walk subdirs
+*/*
+#
+\#*\#
+*~
+#
+*.incl.mk
+
+#
+*.stex
+*.ps
+*.pdf
+#
+# in this directory all tex  is generated from pamphlet
+*.sty    # installed by coq-doc
+*.tex
+# tex / latex intermediate files
+*.aux
+*.log
+*.toc
+*.idx
+*.idxo
+*.ilg
+*.ind
+*.out
+*.bbl
+*.blg
+#
+# in this directory coq .v comes from a pamphlet file
+*.v
+*.v.tex
+*.glob
+*.vo*
+#
+# in this directory all (most ) ml is generated
+#
+*.ml
+*.mli
+*.cmi
+*.cmo
+*.cmX
+*.cmx
+#
+# we may have object files
+#
+*.o
 
 # * Opam
 opam/
 
-# * Coq
-*.vo
-*.glob
-*.v.d
-*.aux
 
-# * Emacs
-*~
+########## specifics
+.updtall.files
+*.awk
 
-# * OCaml
-*.annot
-*.cmo
-*.cma
-*.cmi
-*.a
-*.o
-*.cmx
-*.cmxs
-*.cmxa
+-# Coq Extraction (performed via makefile )
+-queens/
+-bloom/
 
-# ocamlbuild working directory
-_build/
 
-# ocamlbuild targets
-*.byte
-*.native
+ 
 
-# oasis generated files
-setup.data
-setup.log
 

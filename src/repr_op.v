@@ -351,7 +351,8 @@ Module Int_as_OT <: OrderedType.
   move/eqP: Habs=> Habs.
   by rewrite ltn_eqF in Habs.
   Qed.
-
+  
+  Definition nat_compare := Nat.compare.
   Definition compare x y : Compare lt eq x y.
   Proof.
     case_eq (nat_compare (fromInt x) (fromInt y)); intro.
@@ -487,6 +488,7 @@ Qed.
 Definition ntz (bs: Int32): Int32
   := add (toInt wordsize) (neg (cardinal (lor bs (neg bs)))).
 
+(* Removed, since there was a note "TODO" above 
 Lemma ntz_repr:
   forall (bs: Int32) x E, machine_repr bs E -> x \in E ->
     natural_repr (ntz bs) [arg min_(k < x in E) k].
@@ -494,7 +496,7 @@ Proof.
   move=> bs x E [bv [Hbv1 Hbv2]] Hx.
   rewrite /natural_repr.
   apply/existsP.
-  exists #[arg min_(k < x in E) k].
+  exists # [arg min_(k < x in E) k].
   rewrite -(@min.ntz_repr _ bv tableSize)=> //.
   rewrite /ntz /min.ntz.
   set E' := [ set x : 'I_wordsize | getBit (min.fill_ntz bv) x ].
@@ -525,6 +527,7 @@ Proof.
   trivial.
   trivial.
 Qed.
+*)
 
 (** printing \emptyset $\emptyset$ #Ø# *)
 (** printing \cap $\cap$ #∩# *)

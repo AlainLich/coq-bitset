@@ -20,9 +20,9 @@ Proof.
   + (* bs ~ [tuple of b :: bs] *)
     case: b.
     - (* b ~ true *)
-      by rewrite /negB /incB /invB /andB /=
-                 liftUnOpCons !tuple.beheadCons liftBinOpCons andbT
-                 -/andB -/invB andB_invB fromNat0.
+       by rewrite /negB /incB /invB /andB /= 
+               liftUnOpCons !tuple.beheadCons liftBinOpCons andbT
+               -/andB -/invB  andB_invB  -fromNat0.   (* changed direction fromNat0 ! *)
     - (* b ~ false *)
       by rewrite /negB /incB /invB /andB /=
                  liftUnOpCons tuple.theadCons !tuple.beheadCons liftBinOpCons andbF
